@@ -26,12 +26,10 @@ import androidx.navigation.navArgument
 import com.example.inventory.ui.Forms.AddBook
 import com.example.inventory.ui.homeAna.HomeScreen
 import com.example.inventory.ui.intro.IntroScreen
+import com.example.inventory.ui.item.EditBook
 import com.example.inventory.ui.item.ItemDetailsDestination
 import com.example.inventory.ui.item.ItemDetailsScreen
 import com.example.inventory.ui.item.ItemEditDestination
-import com.example.inventory.ui.item.ItemEditScreen
-import com.example.inventory.ui.item.ItemEntryViewModel
-import com.example.inventory.ui.item.MockItemsRepository
 
 
 /**
@@ -55,12 +53,37 @@ fun InventoryNavHost(
         composable(route = HomeDestination.route) {
             HomeScreen(
                 navigateToItemEntry = { navController.navigate("AddBook") },
-                navigateToItemUpdate = { itemId -> /* Implementar ação para atualizar item */ }
+                navigateToItemUpdate = {
+                    navController.navigate("${ItemDetailsDestination.route}/${it}")
+                }
+            )
+        }
+        composable(
+            route = ItemDetailsDestination.routeWithArgs,
+            arguments = listOf(navArgument(ItemDetailsDestination.itemIdArg) {
+                type = NavType.IntType
+            })
+        ){
+            ItemDetailsScreen(
+                navigateToEditItem = {
+                    navController.navigate("${ItemEditDestination.route}/$it")
+                },
+                navigateBack = {navController.navigateUp()}
             )
         }
         composable("AddBook") {
             AddBook(
-                onStartClick = { navController.popBackStack() },
+                onStartClick = { navController.navigateUp()}
+            )
+        }
+        composable(
+            route = ItemEditDestination.routeWithArgs,
+            arguments = listOf(navArgument(ItemEditDestination.itemIdArg) {
+                type = NavType.IntType
+            })
+        ) {
+            EditBook(
+                onStartClick = {navController.navigateUp()}
             )
         }
     }

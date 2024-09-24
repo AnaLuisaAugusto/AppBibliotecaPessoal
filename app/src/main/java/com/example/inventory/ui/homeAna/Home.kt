@@ -43,20 +43,18 @@ fun HomeScreen(
     modifier: Modifier = Modifier
 ) {
 
-    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     val homeUiState by viewModel.homeUiState.collectAsState()
 
     Scaffold(
         modifier = modifier,
         topBar = {
-            // Navbar personalizada
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(80.dp)
-                    .background(Color(0xFFC57BC8)) // Cor de fundo
-                    .border(1.5.dp, Color(0xFFAC54D8)) // Borda
-                    .padding(horizontal = 8.dp)
+                    .height(120.dp)
+                    .background(Color(0xFFC57BC8))
+                    .border(1.5.dp, Color(0xFFAC54D8))
+                    .padding(horizontal = 10.dp)
                     .statusBarsPadding()
             ) {
                 Row(
@@ -65,15 +63,17 @@ fun HomeScreen(
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Image(
-                        painter = painterResource(id = R.drawable.logo), // Imagem do logo
+                        painter = painterResource(id = R.drawable.logo),
                         contentDescription = "Logo",
-                        modifier = Modifier.size(60.dp)
+                        modifier = Modifier.size(50.dp).offset(x = 10.dp)
                     )
                     Text(
                         text = "HOME",
                         textAlign = TextAlign.Center,
-                        fontSize = 18.sp,
-                        style = MaterialTheme.typography.titleMedium.copy(color = Color.Black)
+                        fontSize = 20.sp,
+                        style = MaterialTheme.typography.titleMedium.copy(color = Color.Black),
+                        modifier = Modifier
+                            .offset(x = (-5).dp)
                     )
                     Spacer(modifier = Modifier.width(40.dp))
                 }
@@ -82,9 +82,23 @@ fun HomeScreen(
         floatingActionButton = {
             FloatingActionButton(
                 onClick = navigateToItemEntry,
-                modifier = Modifier.padding(16.dp)
+                modifier = Modifier
+                    .padding(16.dp)
+                    .shadow(8.dp, RoundedCornerShape( topEnd = 16.dp,
+                        bottomEnd = 16.dp,
+                        bottomStart = 16.dp)),
+                containerColor = Color(0xFFBD67E8),
+                shape = RoundedCornerShape(
+                    topEnd = 16.dp,
+                    bottomEnd = 16.dp,
+                    bottomStart = 16.dp
+                )
             ) {
-                Icon(Icons.Default.Add, contentDescription = "Adicionar item")
+                Icon(
+                    imageVector = Icons.Default.Add,
+                    contentDescription = "Adicionar item",
+                    tint = Color.White
+                )
             }
         },
     ) { innerPadding ->
@@ -92,13 +106,13 @@ fun HomeScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)) {
-            Spacer(modifier = Modifier.height(38.dp)) // Espaço entre a topBar e o primeiro item
 
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(innerPadding)
                     .padding(horizontal = 8.dp)
+                    .offset(y = (-90).dp)
             ) {
                 // Verifica se a lista está vazia
                 if (homeUiState.itemList.isEmpty()) {
@@ -131,7 +145,12 @@ fun HomeScreen(
                     }
                 } else {
                     items(homeUiState.itemList) { item ->
-                        InventoryItem(item = item)
+                        InventoryItem(item = item,
+                            modifier = Modifier
+                                .padding(dimensionResource(id = R.dimen.padding_small))
+                                .clickable { navigateToItemUpdate(item.id) }
+                        )
+
                     }
                 }
             }
@@ -143,10 +162,29 @@ fun HomeScreen(
 private fun InventoryItem(
     item: Item, modifier: Modifier = Modifier
 ) {
+
+    val cardBgColor = Color(0xFFF0F0F0)
+
     Card(
-        modifier = modifier,
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        modifier = modifier
+            .fillMaxWidth()
+            .border(
+                BorderStroke(2.dp, Color(0xFFF7B100)),
+                RoundedCornerShape(
+                    topEnd = 25.dp,
+                    bottomStart = 25.dp
+                )
+            ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        shape = RoundedCornerShape(
+            topEnd = 25.dp,
+            bottomStart = 25.dp
+        ),
+        colors = CardDefaults.cardColors(
+            containerColor = cardBgColor
+        )
     ) {
+
         Column(
             modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_large)),
             verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_small))
@@ -156,13 +194,39 @@ private fun InventoryItem(
             ) {
                 Text(
                     text = item.titulo,
+                    color = Color.Black,
+                    fontSize = 20.sp,
+                    style = MaterialTheme.typography.titleLarge,
+                )
+            }
+            Spacer(modifier = Modifier.height(1.dp))
+
+            Row(
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(
+                    text =  "Autor: " + item.autor,
+                    color = Color.Black,
+                    fontSize = 18.sp,
                     style = MaterialTheme.typography.titleLarge,
                 )
                 Spacer(Modifier.weight(1f))
-                Text(
-                    text = item.autor,
-                    style = MaterialTheme.typography.titleMedium
-                )
+
+                Box(
+                    modifier = Modifier
+                        .width(100.dp)
+                        .background(Color(0xFFFFD555), RoundedCornerShape(15.dp))
+                        .padding(horizontal = 8.dp, vertical = 4.dp)
+
+                ) {
+                    Text(
+                        text = item.ano.toString(),
+                        fontSize = 18.sp,
+                        color = Color.Black,
+                        style = MaterialTheme.typography.titleMedium,
+                        modifier = Modifier.align(Alignment.Center),
+                    )
+                }
             }
         }
     }

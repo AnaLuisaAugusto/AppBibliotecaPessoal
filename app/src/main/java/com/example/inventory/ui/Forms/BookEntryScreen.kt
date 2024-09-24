@@ -39,6 +39,7 @@ import kotlinx.coroutines.launch
 fun AddBook(
     onStartClick: () -> Unit,
     viewModel: ItemEntryViewModel = viewModel(factory = AppViewModelProvider.Factory)
+
 ) {
     val itemUiState = viewModel.itemUiState
 
@@ -47,10 +48,10 @@ fun AddBook(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(80.dp)
+                    .height(120.dp)
                     .background(Color(0xFFC57BC8))
-                    .border(2.dp, Color(0xFFAC54D8))
-                    .padding(horizontal = 8.dp)
+                    .border(1.5.dp, Color(0xFFAC54D8))
+                    .padding(horizontal = 10.dp)
                     .statusBarsPadding()
             ) {
                 Row(
@@ -61,15 +62,17 @@ fun AddBook(
                     Image(
                         painter = painterResource(id = R.drawable.logo),
                         contentDescription = "Logo",
-                        modifier = Modifier.size(60.dp)
+                        modifier = Modifier.size(50.dp).offset(x = 10.dp)
                     )
                     Text(
                         text = "ADICIONAR LIVRO",
                         textAlign = TextAlign.Center,
-                        fontSize = 18.sp,
-                        style = MaterialTheme.typography.titleMedium.copy(color = Color.Black)
+                        fontSize = 20.sp,
+                        style = MaterialTheme.typography.titleMedium.copy(color = Color.Black),
+                        modifier = Modifier
+                            .offset(x = (-5).dp)
                     )
-                    Spacer(modifier = Modifier.width(45.dp))
+                    Spacer(modifier = Modifier.width(40.dp))
                 }
             }
         }
@@ -162,7 +165,6 @@ fun AddBook(
 
             Spacer(modifier = Modifier.height(60.dp))
 
-            // Dentro da sua função AddBook
             val coroutineScope = rememberCoroutineScope()
 
             Button(
@@ -176,10 +178,15 @@ fun AddBook(
                     .width(200.dp)
                     .height(55.dp),
                 shape = RoundedCornerShape(15.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFFD555)),
                 border = BorderStroke(2.dp, Color(0xFFF7B100)),
-                enabled = itemUiState.isEntryValid // Habilita o botão apenas se os dados forem válidos
-            ) {
+                colors = ButtonDefaults.buttonColors(
+                    containerColor =  Color(0xFFFFD555),
+                    disabledContainerColor = Color(0xFFFFD555),
+                    contentColor = Color.Black,
+                    disabledContentColor = Color.DarkGray
+                ),
+                enabled = itemUiState.isEntryValid
+            ){
                 Text(
                     text = "FINALIZAR",
                     color = Color.Black,
